@@ -1,0 +1,31 @@
+{% extends "panel.html" %}
+
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>Account Information</h1>
+  <div class="action_forms" id="main_actions">
+    <p><a class="upgrade_action_button" href="/panel/account/upgrade" style="float: right;">Upgrade</a>
+    <a class="action_button" href="/panel/account/edit">Edit Account</a>
+    </p>
+  </div>
+  <div id="account_information">
+    {% if account %}
+    {% if account.first_name %}<p><h2>First Name</h2> {{ account.first_name }}</p>{% endif %}
+    {% if account.last_name %}<p><h2>Last Name</h2> {{ account.last_name }}</p>{% endif %}
+    {% if account.display_name %}<p><h2>Display Name</h2> {{ account.display_name }}</p>{% endif %}
+    {% if account.phone %}<p><h2>Phone Number</h2> {{ account.phone }}</p>{% endif %}
+    {% if account.role %}<p><h2>Role</h2> {{ account.role|capfirst }}</p>{% endif %}
+    {% if account.company %}<p><h2>Company</h2> {{ account.company }}</p>{% endif %}
+    {% if account.description %}<p><h2>Bio</h2><div style="position: relative"> {{ account.description }}</div></p>{% endif %}
+    {% else %}<p>No account information stored.</p>
+    {% endif %}
+  </div>
+
+  {% if account.picture %}
+  <h2>Picture</h2>
+  <a href="{{ account.picture.serve_picture }}"><img src="{{ account.picture.serve_medium }}" /></a>
+  {% endif %}
+</div>
+{% endblock admin_body %}
+

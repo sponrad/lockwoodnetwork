@@ -1,0 +1,110 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>Listings</h1>
+  <div class="action_forms" id="main_actions">
+    <p><a class="action_button" href="/panel/listing/create" >Create New Listing</a></p>
+  </div>
+  {% if delete_error %}<p>You must hide a listing before you delete it.</p>{% endif %}
+  <div class="tabbed_form_container">
+    <ul class="tab_list">
+      <li id="sale_tab" class="selected_tab"><a href="#sale_tab_block">For sale</a></li>
+    </ul>
+    <div id="sale_tab_block">
+      {% for listing in sale %}
+      <a href="/listing/{{ listing.key.id }}"><h2>{{ listing.title }}{% if listing.price %} ${{ listing.price|intcomma }}{% endif %}</h2></a>
+      <div class="action_forms">
+	<a class="action_button" href="/panel/listing/{{ listing.key }}">Edit</a>
+	<a class="action_button" href="/panel/listing/gallery/{{ listing.key }}">Edit Gallery</a>
+ 	{% if listing.active %}
+	<form id="hide" method="post" action="/panel/listing">
+	  <input type="hidden" name="action" value="hide" />
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  <input class="action_button" type="submit" name="submit" value="Hide" />
+	</form>
+	{% else %}
+	<form id="show-{{ listing.key }}" method="post" action="/panel/listing">
+	  <input type="hidden" name="action" value="show" />
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  <input class="action_button" type="submit" name="submit" value="Show" />
+	</form>
+	{% endif %}
+	<form id="delete-{{ listing.key }}" method="post" action="/panel/listing">
+	  <input type="hidden" name="action" value="delete" />
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  <input class="action_button" type="submit" name="submit" value="Delete" />
+	</form>
+	<a class="upgrade_action_button" style="float: right" href="/panel/listing/upgrade/{{ listing.key }}">Upgrade</a>
+      </div>
+      {% endfor %}
+    </div>
+    <ul class="tab_list">
+      <li id="lease_tab" class="selected_tab"><a href="#lease_tab_block">For lease</a></li>
+    </ul>
+    <div id="lease_tab_block">
+      {% for listing in lease %}
+      <a href="/listing/{{ listing.key.id }}"><h2>{{ listing.title }}{% if listing.price %} ${{ listing.price|intcomma }}{% endif %}</h2></a>
+      <div class="action_forms">
+	<a class="action_button" href="/panel/listing/{{ listing.key }}">Edit</a>
+	<a class="action_button" href="/panel/listing/gallery/{{ listing.key }}">Edit Gallery</a>
+	{% if listing.active %}
+	<form id="hide-{{ listing.key }}" method="post">
+	  <input type="hidden" name="action" value="hide" />
+	  <input type="hidden" name="key" value={{ listing.key }} />
+	  <input class="action_button" type="submit" name="submit" value="Hide" />
+	</form>
+	{% else %}
+	<form id="show-{{ listing.key }}" method="post" action="/panel/listing">
+	  <input type="hidden" name="action" value="show" />
+	  <input type="hidden" name="key" value={{ listing.key }} />
+	  <input class="action_button" type="submit" name="submit" value="Show" />
+	</form>
+	{% endif %}
+	<form id="delete-{{ listing.key }}" method="post" action="/panel/listing">
+	  <input type="hidden" name="action" value="delete" />
+	  <input type="hidden" name="key" value={{ listing.key }} />
+	  <input class="action_button" type="submit" name="submit" value="Delete" />
+	</form>
+	<a class="upgrade_action_button" style="float: right" href="/panel/listing/upgrade/{{ listing.key }}">Upgrade</a>
+      </div>
+      <p>{{ listing.description }}</p>
+      {% endfor %}
+    </div>
+    <ul class="tab_list">
+      <li id="sale_and_lease_tab" class="selected_tab"><a href="#sale_and_lease_tab_block">For sale and lease</a></li>
+    </ul>
+    <div id="sale_and_lease_tab_block">
+      {% for listing in both %}
+      <a href="/listing/{{ listing.key.id }}"><h2>{{ listing.title }}{% if listing.price %} ${{ listing.price|intcomma }}{% endif %}</h2></a>
+      <div class="action_forms">
+	<a class="action_button" href="/panel/listing/{{ listing.key }}">Edit</a>
+	<a class="action_button" href="/panel/listing/gallery/{{ listing.key }}">Edit Gallery</a>
+	{% if listing.active %}
+	<form id="hide-{{ listing.key }}" method="post" action="/panel/listing">
+	  <input type="hidden" name="action" value="hide" />
+	  <input type="hidden" name="key" value={{ listing.key }} />
+	  <input class="action_button" type="submit" name="submit" value="Hide" />
+	</form>
+	{% else %}
+	<form id="show-{{ listing.key }}" method="post">
+	  <input type="hidden" name="action" value="show" />
+	  <input type="hidden" name="key" value={{ listing.key }} />
+	  <input class="action_button" type="submit" name="submit" value="Show" />
+	</form>
+	{% endif %}
+	<form id="delete-{{ listing.key }}" method="post">
+	  <input type="hidden" name="action" value="delete" />
+	  <input type="hidden" name="key" value={{ listing.key }} />
+	  <input class="action_button" type="submit" name="submit" value="Delete" />
+	</form>
+	<a class="upgrade_action_button" style="float: right" href="/panel/listing/upgrade/{{ listing.key }}">Upgrade</a>
+      </div>
+      <p>{{ listing.description }}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock admin_body %}
+
+

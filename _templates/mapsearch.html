@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+
+{% block head %}
+<script charset="UTF-8" type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0">
+</script>
+<script type="text/javascript">
+  function GetMap()
+  {   
+  var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), 
+  {credentials: "{{ bingkey }}",
+  center: new Microsoft.Maps.Location({{ latlong.0 }}, {{ latlong.1 }}),
+  mapTypeId: Microsoft.Maps.MapTypeId.road,
+  zoom: 11,
+  disableZooming: true,
+  });
+
+  var pins = new Microsoft.Maps.EntityCollection();
+  {% for l in listings %}
+  pins.push(new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location({{ l.location }}), {text: {{ l.key.id }}}));{% endfor %}
+  /*Microsft.Maps.Events.addHandler(pins, 'click', PinClick);*/
+  map.entities.push(pins);
+
+  function PinClick(e){
+  if (e.targetType == 'pushpin'){
+  var clickedpin = e.target;
+  window.location("/listing/" + clickedpin.text);
+  }}
+  }
+</script>
+{% endblock head %}
+
+{% block bodytag %} onload="GetMap();"{% endblock bodytag %}
+
+{% block searchbody %}
+<div id="mapwrapper" style="height: 600px;">
+<div id='mapDiv' style="position: absolute; width:1000px; height:600px;"></div>
+</div>
+<div style="width: 900px">{{ listings|length }} results</div>
+{% endblock searchbody %}

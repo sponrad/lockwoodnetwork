@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block searchbody %}
+
+{% for listing in listings %}
+<div class="listingtile">
+  <a href="/listing/{{ listing.key.id }}">{{ listing.title }}</a>
+  <div>{% if listing.address %}{{ listing.address }}{% else %}No Address{% endif %}</div>
+  <a href="/listing/{{ listing.key.id }}">
+    <div class="imagewrap" >
+      {% if listing.display_picture %}
+      <img src="{{ listing.display_picture.serve_medium}}" width=250 />
+      {% endif %}
+    </div>
+  </a>
+  {% if listing.price %}${{ listing.price|intcomma }}{% endif %}
+</div>
+{% endfor %}
+<div style="min-width: 900px; display: inline-block;">{{ listings|length }} results</div>
+<div style="min-width: 900px; display: inline-block;">This view would become ugly fast if the title, address, or other tile data spilled over into two lines. Length of those fields would need to be limited when first entered, or cut off when placed here in the tiles.</div>
+{% endblock searchbody %}

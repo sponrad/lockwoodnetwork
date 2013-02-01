@@ -1,0 +1,15 @@
+application: lockwoodnetwork
+version: 3
+runtime: python
+api_version: 1
+
+handlers:
+- url: /_static
+  static_dir: _static
+
+- url: /admin
+  script: lockwoodnetwork.py
+  login: admin
+
+- url: /.*
+  script: lockwoodnetwork.py

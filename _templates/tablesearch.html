@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+{% block head %}
+<script type="text/javascript" src="/_static/_js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript"> 
+  $(document).ready(function() {
+  $('#listingTable').tablesorter();
+  } );
+</script> 
+{% endblock head %}
+
+{% block searchbody %}
+<div class="single_column_container">
+  <div class="right_column">
+    <table id="listingTable" class="tablesorter" >
+      <thead>
+	<tr>
+	  <th></th>
+	  <th>Title</th>
+	  <th>Address</th>
+	  <th>City</th>
+	  <th>Price</th>
+	  <th>Sq. Ft</th>
+	  <th>Year Built</th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for listing in listings %}
+	<tr class="row">
+	  <td><img {% if listing.display_picture %}src="{{ listing.display_picture.serve_medium }}"{% endif %} height=85; /></td>
+	  <td><a href="/listing/{{ listing.key.id }}" >{{ listing.title }}</a></td>
+	  <td>{{ listing.address }}</td>
+	  <td>{{ listing.city }}</td>
+	  <td>${{ listing.price|intcomma }}</td>
+	  <td>{{ listing.sq_ft }}</td>
+	  <td></td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock searchbody %}

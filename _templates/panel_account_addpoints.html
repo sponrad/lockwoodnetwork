@@ -1,0 +1,27 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+<h1>Add Points to Account</h1>
+
+<p style="float: right;">Points Balance: {{ account.points }}</p>
+<p>Add points to your account to purchase upgrades.</p>
+
+<form id="addpoints" method="post" action="/panel/account/addpoints" >
+  <input type="hidden" name="referer" value="{{ referer }}" />
+  <label><input type="radio" name="amount" id="amount" value="500"> 500 Points for $8.99</input></label>
+  <label><input type="radio" name="amount" id="amount" value="1000"> 1000 Points for $17.49</input></label>
+  <label><input type="radio" name="amount" id="amount" value="5000"> 5000 Points for $42.49</input></label>
+  <label><input type="radio" name="amount" id="amount" value="10000"> 10000 Points for $79.99</input></label>
+  <label><input type="radio" name="amount" id="amount" value="20000"> 20000 Points for $159.99</input></label>
+  <label><input type="radio" name="amount" value="custom"><input type="text" name="customvalue"></input> Custom quantity at $0.99 per Point.</input></label>
+<p>Credit info here</p>
+<div>
+  <input type="submit" class="upgrade_action_button" value="Accept" />
+  <a href="{{ referer }}" class="action_button">Cancel</a>
+</div>
+</form>
+
+
+</div>
+{% endblock admin_body %}

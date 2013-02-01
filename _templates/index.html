@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>{% block title %}Lockwood Network{% endblock title %}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <meta name="google-site-verification" content="lrys55kPaGqLEDig7EYiKivzVGyRf1kjX91DDTqtM8U" />
+    <link rel="stylesheet" type="text/css" href="/_static/style.css" />
+    <link rel="stylesheet" type="text/css" media="print" href="/_static/print.css" />
+    <link rel="shortcut icon" href="/_static/favicon.ico" />
+    <script type="text/javascript" src="/_static/_js/jquery.js"></script>
+    <!-- <script type="text/javascript" src="/_static/_js/ln.js"></script> -->
+    {% block head %}
+    {% endblock head %}
+  </head>
+  <body{% block bodytag %}{% endblock bodytag %}>
+
+    <div id="header">
+      <div id="top_right_info">
+	{% if user %}
+	{% if account.display_name %}{{ account.display_name }}{% else %}{{ user.nickname }}{% endif %}
+	<a href="/panel">Account</a>
+	<a href="{{ logout_url }}">Logout</a>
+	{% else %}
+	<a href="{{ login_url }}">Login</a>
+	{% endif %}
+      </div>
+      <a id="ln_logo" href="/"><h1>Lockwood Network</h1></a>
+      <ul>
+	<li {% if inhomesection %}class="current_page"{% endif %}><a href="/">Home</a></li>
+	<li {% if insearchsection %}class="current_page"{% endif %}><a href="/search">Search</a></li>
+	<li><a href="/">Tenant Representation</a></li>
+	<li><a href="/">Tools</a></li>
+	<li {% if inaboutsection %}class="current_page"{% endif %}><a href="/about">About</a></li>
+      </ul>
+    </div>
+
+    <div id="page_container">
+      
+      {% block body %}
+      <div>
+	{% if not insearchsection %}
+	<div id="mainheadline">A New Approach to Commercial Real Estate</div>
+	<div class="headline">
+	  <h3>Free Search</h3>
+	  <p>Commercial property listings on the Lockwood Network are completely <b>free</b> to search. Use the search panel below to begin.</p>
+	  </div>
+	<div class="headline">
+	  <h3>Free Listing</h3>
+	  <p>Listing on the Lockwood Network is <b>free</b> to start. Begin listing right away by accessing your account at the upper right.</p>
+	</div>
+	{% endif %}
+	
+	<form method="get" action="/search">
+	  <div class="search_form">
+	  <input type="submit" value="Search" class="submit" />
+	  <input type="hidden" name="page" value="{% if page %}{{ page }}{% else %}1{% endif %}" />
+	  <input type="hidden" name="lastsearchtype" value="{{ searchtype }}" />
+	  <input type="text" name="location" id="location" style="text-align: left" class="text" {% if criteria.location %}value="{{ criteria.location }}"{% else %}value="Address"{% endif %} onfocus="if (this.value == 'Address'){ this.value = '';}" onblur="if (this.value == ''){ this.value = 'Address'}"/>
+	  <select name="sale_type" id="sale_type">
+	    <option value="S" {% if criteria.sale_type == 'S' %}selected="selected"{% endif %}>For Sale</option>
+	    <option value="L" {% if criteria.sale_type == 'L' %}selected="selected"{% endif %}>For Lease</option>
+	    <option value="B" {% if criteria.sale_type == 'B' %}selected="selected"{% endif %}>For Sale or Lease</option>
+	  </select>
+	  
+	  <div class="search_form_row">
+	  <input type="text" name="min_price" value="{% if criteria.min_price %}{{ criteria.min_price }}{% else %}min price{% endif %}" id="min_price" class="text" onfocus="if (this.value == 'min price'){this.value = '';}" onblur="if (this.value == ''){this.value= 'min price'}"/>
+	  <input type="text" name="max_price" value="{% if criteria.max_price %}{{ criteria.max_price }}{% else %}max price{% endif %}" id="max_price" class="text" onfocus="if (this.value == 'max price'){this.value = '';}" onblur="if (this.value == ''){this.value= 'max price'}"/>
+	  <input type="text" name="min_sqft" value="{% if criteria.min_sqft %}{{ criteria.min_sqft }}{% else %}min sqft.{% endif %}" id="min_sqft" class="text" onfocus="if (this.value == 'min sqft.'){this.value = '';}" onblur="if (this.value == ''){this.value= 'min sqft.'}"/>
+	  <input type="text" name="max_sqft" value="{% if criteria.max_sqft %}{{ criteria.max_sqft }}{% else %}max sqft.{% endif %}" id="max_sqft" class="text" onfocus="if (this.value == 'max sqft.'){this.value = '';}" onblur="if (this.value == ''){this.value= 'max sqft.'}"/>
+
+	  <label for="radius" style="margin: 5px;">Radius (mi.) </label>	
+	  <input type="text" class="text"  name="radius" value="{% if radius %}{{ radius }}{% else %}10{% endif %}"  style="width: 45px;"/>
+	  </div>	
+
+	  <div class="search_form_row" id="checkbox_row">
+	  {% if insearchsection %}
+	  <input type="submit" class="action_button" name="searchtype" value="Map" />
+	  <input type="submit" class="action_button" name="searchtype" value="Table" />
+	  <input type="submit" class="action_button" name="searchtype" value="List" />
+	  <input type="submit" class="action_button" name="searchtype" value="Tiles" />
+<!--	  <div style="display: inline;">Page: {{ page }} of {{ numberofpages }}</div> -->
+	  {% endif %}
+	    <input type="checkbox" name="commercial" id="commercial" {% if "commercial" in criteria.listing_type %}checked="yes"{% endif %}/>
+	    <label for="commercial"> Commercial </label>
+	    <input type="checkbox" name="industrial" id="industrial" {% if "industrial" in criteria.listing_type %}checked="yes"{% endif %}/>
+	    <label for="industrial">Industrial</label>
+	    <input type="checkbox" name="office" id="office" {% if "office" in criteria.listing_type %}checked="yes"{% endif %}/>
+	    <label for="office">Office</label>
+	    <input type="checkbox" name="apartment" id="apartment" {% if "apartment" in criteria.listing_type %}checked="yes"{% endif %}/>
+	    <label for="apartment">Apartment</label>
+	    <input type="checkbox" name="land" id="land" {% if "land" in criteria.listing_type %}checked="yes"{% endif %}/>
+	    <label for="land">Land</label>
+	  </div>
+
+	  </div>
+	</form>
+      </div>
+      {% block searchbody %}
+      <div class="footline">
+	<div class="text">The Lockwood Network gives commercial real estate brokers, owners, managers, and representatives access to a set of marketing tools previously only available to large real estate organizations, including brochure creation, e-mail blasts, site video tour and gallery hosting, sign placement, and more.</div>
+	<div class="image"><img src="" height=260 width=260 /></div>
+      </div>
+      <div class="footline">
+	<div class="text">The Lockwood Network creates opportunities for commercial real estate vendors to connect with agents and owners in specific areas. Contact information for inquiring vendors and steps forward can be found under the Vendors tab avove.</div>
+	<div class="image"><img src="" height=260 width=260 /></div>
+      </div>
+      {% endblock searchbody %}
+      {% endblock body %}
+    </div>
+
+    <div id="page_footer">
+      <div id="footer_wrap">
+	<p><span style="float: right">2725 Jefferson Street, Suite 1, Carlsbad, CA 92008</span><a href="/">Terms of Use</a> <a href="/">Privacy</a></p>	
+	<p><span style="float: right"><strong>Copyright</strong> 2011 <a href="/">Lockwood Network</a></span>Lockwood Network relies on <a href="http://www.chipandbytes.com/">Chip &amp; Bytes</a> for all of their ongoing IT needs.</p>
+      </div>
+    </div>
+  </body>
+</html>

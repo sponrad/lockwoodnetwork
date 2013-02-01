@@ -1,0 +1,51 @@
+{% extends "index.html" %}
+
+{% block searchbody %}
+<div class="single_column_container">
+  <div class="right_column">
+    {% for listing in listings %}
+    <div class="property_listing">
+      <div class="listing_image">
+	<div class="listing_image_border">
+	  {% if listing.display_picture %}
+	  <div class="listing_image_background" style="background-image: url({{ listing.display_picture.serve_medium }});">
+	    <a href="{{ listing.display_picture.serve_picture }}"><img src="{{ listing.display_picture.serve_medium }}" alt="{{ listing.display_picture.description }}" /></a>
+	  </div>
+	  {% else %}
+	  {% if listing.picture_set.count > 0 %}
+	  <div class="listing_image_background" style="background-image: url({{ listing.picture_set.0.serve_medium }});">
+	    <a href="{{ listing.picture_set.0.serve_picture }}"><img src="{{ listing.picture_set.0.serve_medium }}" alt="{{ listing.picture_set.0.description }}" /></a>
+	  </div>
+	  {% else %}
+	  <div class="listing_image_background" >
+	    <p>No images available</p>
+	  </div>
+	  {% endif %}
+	  {% endif %}
+	</div>
+      </div>
+      <h1>
+	{% if listing.sale_type == "B" %}
+	<span>Sale or Lease</span>
+	{% else %}
+	{% if listing.sale_type == "S" %}
+	<span>Sale</span>
+	{% else %}
+	<span>Lease</span>
+	{% endif %}    
+	{% endif %}
+	<a href="/listing/{{ listing.key.id }}">{{ listing.title }}</a>
+      </h1>
+      <div class="listing_information">
+	<h2 class="price">{% if listing.price %}${{ listing.price|intcomma }}{% endif %}</h2>
+	<h2>{% if listing.address %}{{ listing.address }}{% endif %}</h2>
+	<p>{% if listing.description %}{{ listing.description }}{% endif %}</p>
+      </div>
+      <div class="property_listing_footer">
+	<a href="/listing/{{ listing.key.id }}"><img src="/_static/view_details_button.gif" alt="View details" /></a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock searchbody %}

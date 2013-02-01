@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+{% block body %}
+<script type="text/javascript" src="/_static/_js/tabbed_forms.js"></script>
+<div class="double_column_container">
+  <div class="left_column">
+    <ul id="administration_menu">
+      {% if is_admin %}
+      <li><a href="/panel">Manage Satellite Sites</a></li>
+      <li><a href="/admin/blocks">Manage Frontpage Blocks</a></li>
+      <li><a href="/admin/images">Manage Frontpage Banner Images</a></li>
+      <li><a href="/admin/news">Manage Site News</a></li>
+      {% endif %}
+      <!--
+      <li><a href="/admin/backups">Get Latest Backups</a></li>
+      <li><a href="/admin/users">Manage Users</a></li>
+      <li><a href="/admin/pages">Manage Static Pages</a></li>
+      -->
+      <li><a href="/panel/account">Account Information</a></li>
+      <li><a href="/panel/advertise">Advertising</a></li>
+      <li><a href="/panel/listing">Listings</a></li>
+      <li><a href="/panel/purchases">Purchase History</a></li>
+      <li><a href="{{ logout_url }}">Logout</a></li>
+    </ul>
+  </div>
+  
+  {% block admin_body %}
+
+  <div class="right_column">    
+    <h1>Account Panel</h1>
+    <p>Use the menu to the left to manage your Lockwood Network account.</p>
+    <h2>Account Information</h2>
+    <p><b>List some classy stats/tables here for impressive impressions</b></p>
+    <p>This panel allows you to update your contact information & biography. This is the information that is displayed on your bropker page.</p>
+    <h2>Listings</h2>
+    <p>This panel allows you to edit the details for listings that you are currently managing.</p>
+  </div>
+  
+  {% endblock admin_body %}
+  
+</div>
+
+{% endblock body %}

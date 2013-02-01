@@ -1,0 +1,93 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>Listing Gallery</h1>
+  <div id="main_actions" class="action_forms">
+    <a class="action_button" href="/panel/listing">Back to listings</a>
+  </div>
+  <div class="tabbed_form_container">
+    <ul class="tab_list">
+      <li id="current_images_tab" class="selected_tab"><a href="#current_images_tab_block">Current Images</a></li>
+    </ul>
+    <div id="current_images_tab_block">
+      <h2>Gallery for {{ listing.title }}</h2>
+      {% for picture in listing.picture_set|dictsort:"order" %}
+      <div class="action_forms">
+	{% if picture.visible %}
+	<form id="disable" method="post" />
+	<input type="hidden" name="action" value="hide" />
+	<input type="hidden" name="key" value="{{ picture.key }}" />
+	<input class="action_button" type="submit" name="submit" value="Hide" />
+	</form>
+{% else %}
+<form id="enable" method="post" />
+<input type="hidden" name="action" value="show" />
+<input type="hidden" name="key" value="{{ picture.key }}" />
+<input class="action_button" type="submit" name="submit" value="Show" />
+</form>
+{% endif %}
+
+{% if not picture.display_picture %}
+<form id="set_default" method="post" />
+<input type="hidden" name="action" value="set_default" />
+<input type="hidden" name="key" value="{{ picture.key }}" />
+<input class="action_button" type="submit" name="submit" value="Set as Default" />
+</form>
+{% endif %}
+
+{% if not forloop.first %}
+<form id="up" method="post" />
+<input type="hidden" name="action" value="move-up" />
+<input type="hidden" name="key" value="{{ picture.key }}" />
+<input class="action_button" type="submit" name="submit" value="Move Up" />
+</form>
+{% endif %}
+
+{% if not forloop.last %}
+<form id="down" method="post" />
+<input type="hidden" name="action" value="move-down" />
+<input type="hidden" name="key" value="{{ picture.key }}" />
+<input class="action_button" type="submit" name="submit" value="Move Down" />
+</form>
+{% endif %}
+
+<form id="delete" method="post" >
+<input type="hidden" name="action" value="delete" />
+<input type="hidden" name="key" value="{{ picture.key }}" />
+<input class="action_button" type="submit" name="submit" value="Delete" />
+</form>
+</div>
+
+<div style="overflow: auto; width: 470px; margin: 10px 0 20px;"><img src="{{ picture.serve_medium }}" alt="image #{{ picture.key }}" /></div>
+<div class="form_container" style="border-bottom: 1px dashed #AAA; margin-bottom: 20px;">
+  <form name="edit-{{ picture.key }}" method="post">
+    <input type="hidden" name="action" value="edit" />
+    <input type="hidden" name="key" value="{{ picture.key }}" />
+    <label for="description">Description</label>
+    <input id="description" class="text_input" type="text" name="description" maxlength="255" value="{{ picture.description }}" />
+    <input type="submit" class="action_button" value="Update Description" />
+  </form>
+</div>
+{% endfor %}
+</div>
+
+<ul class="tab_list">
+  <li id="new_image_tab" class="selected_tab"><a href="#new_image_tab_block">Upload Image</a></li>
+</ul>
+<div id="new_image_tab_block">
+  <div class="form_container">
+    <form name="upload" method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+      <input type="hidden" name="action" value="add" />
+      <input type="hidden" name="key" value="{{ listing.key }}"
+      <label for="new_image">New Image <em>(Required)</em></label>
+      <input id="new_image" class="file_input" type="file" name="file" />
+      <label for="description">Description</label>
+      <input id="description" class="text_input" type="text" name="description" maxlength="255" />
+      <input class="action_button" type="submit" name="submit" value="Upload" />
+    </form>
+  </div>
+</div>
+</div>
+</div>
+{% endblock admin_body %}

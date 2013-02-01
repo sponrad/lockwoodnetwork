@@ -1,0 +1,60 @@
+{% extends "panel.html" %}
+
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>Listing - Suite</h1>
+  <div id="main_actions" class="action_forms">
+    <form method="post" action="/panel/listing/{{ listing.key }}">
+      <input class="action_button" type="submit" value="{% if editing %}Cancel Edit{% else %}Cancel Create{% endif %}" />
+    </form>
+  </div>
+  <div class="tabbed_form_container">
+    <ul class="tab_list">
+      <li id="suite_tab" class="selected_tab"><a href="#suite_tab_block">
+	  {% if editing %}Edit Suite{% else %}Create Suite{% endif %}
+      </a></li>
+    </ul>
+    <div id="suite_tab_block">	
+      <div class="form_container">
+	<p>If you have no information for a field leave it empty and it will not be displayed.</p>
+	<form name="suite" method="post" enctype="multipart/form-data" action="{{ upload_url }}">
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  <input type="hidden" name="action" value="{% if editing %}edit{% else %}create{% endif %}" />
+	  {% if suite %}<input type="hidden" name="suitekey" value="{{ suite.key }}" />{% endif %}
+	  <label for="suite_number">Suite Number</label>
+	  <input id="suite_number" class="text_input" type="text" name="suite_number" value="{{ suite.suite_number }}" />				
+	  <label for="floorplan">Floorplan ({% if suite.floorplan %}<a href="/download/{{ suite.floorplank.key }}">View</a>{% else %}None set.{% endif %})</label>
+	  <input id="floorplan" class="file_input" type="file" name="floorplan" />
+	  {% if suite.floorplan %}
+	  <label for="floorplan_remove">Remove current floorplan?</label>
+	  <input id="floorplan_remove" class="checkbox" type="checkbox" name="floorplan_remove" />
+	  {% endif %}
+	  <label for="square_feet">Square Feet</label>
+	  <input id="square_feet" class="text_input" type="text" name="square_feet" value="{{ suite.square_feet }}" />						
+	  <label for="price">Price</label>
+	  <input id="price" class="text_input" type="text" name="price" value="{{ suite.price }}" />						
+	  <label for="price_per_foot">Price Per Foot</label>
+	  <input id="price_per_foot" class="text_input" type="text" name="price_per_foot" value="{{ suite.price_per_foot }}" />
+	  <label for="hvac">HVAC</label>
+	  <input id="hvac" class="text_input" type="text" name="hvac" value="{{ suite.hvac }}" />
+	  <label for="number_of_offices">Number of Offices</label>
+	  <input id="number_of_offices" class="text_input" type="text" name="number_of_offices" value="{{ suite.number_of_offices }}" />
+	  <label for="windowed_offices">Number of Windowed Offices</label>
+	  <input id="windowed_offices" class="text_input" type="text" name="windowed_offices" value="{{ suite.windowed_offices }}" />					
+	  <label for="restrooms">Number of Restrooms</label>
+	  <input id="restrooms" class="text_input" type="text" name="restrooms" value="{{ suite.restrooms }}" />						
+	  <label for="available_immediatley">Available Immediatley</label>
+	  <input id="available_immediatley" class="text_input" type="text" name="available_immediatley" value="{{ suite.available_immediatley }}" />	
+	  <label for="walkthrough">Walkthrough Video ID</label>
+	  <input id="walkthrough" class="text_input" type="text" name="walkthrough" value="{{ suite.walkthrough }}" />	
+	  <label for="features">Features</label>
+	  <textarea id="features" name="features">{% for feature in suite.features %}{{ feature }}{% if not forloop.last %}
+{% else %}{% endif %}{% endfor %}</textarea>
+	  <input class="upgrade_action_button" type="submit" value="Save" />
+	</form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock admin_body %}

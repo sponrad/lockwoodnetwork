@@ -1,0 +1,18 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>Purchase History</h1>
+  <p style="float: right;">Points Balance: {{ account.points }}</p>
+  <a style="float: right; clear: right;" href="/panel/account/addpoints" class="upgrade_action_button">Add Points</a>
+  <p>Purchases: {{ account.totalspent }} Points</p>
+  <div class="clear_right"></div>
+  {% if purchases %}
+  {% for purchase in purchases %}
+  <p><b>{{ purchase.points }} points, </b>{{ purchase.title }} {{ purchase.description }}, <em>{{ purchase.date_created }}</em></p>
+  {% endfor %}
+  {% else %}
+  <p>No Purchases</p>
+  {% endif %}
+</div>
+{% endblock admin_body %}

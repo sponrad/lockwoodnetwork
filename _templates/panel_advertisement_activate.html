@@ -1,0 +1,22 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+<h1>Activate Advertisement</h1>
+
+<p style="float: right;">Points Balance: {{ account.points }}</p>
+<a style="float: right; clear: right;" href="/panel/account/addpoints" class="upgrade_action_button">Add Points</a>
+<p>Cost to activate: {{ ad.cost }} Points</p>
+
+<img src="{% if ad.picture %}{{ ad.picture.picture.serve_thumbnail }}{% else %}{{ ad.link_to_picture }}{% endif %}" />
+
+<p>{{ ad.description }}</p>
+
+
+<form method="post" action="/panel/advertisement/activate/{{ ad.key }}">
+{% if  ad.cost <= account.points %}<input name="action" type="submit" class="upgrade_action_button" value="Accept" />{% else %}<h4>Please add points to your account.</h4>{% endif %}
+<input name="action" type="submit" class="action_button" value="Cancel" />
+</form>
+
+</div>
+{% endblock admin_body %}

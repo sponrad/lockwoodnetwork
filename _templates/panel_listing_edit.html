@@ -1,0 +1,143 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>{% if editing %}Edit {% else %}Create {% endif %}Listing</h1>
+  <div id="main_actions" class="action_forms">
+    <p><a class="action_button" href="/panel/listing">Cancel</a></p>
+  </div>
+  <div class="tabbed_form_container">
+    <ul class="tab_list">
+      <li id="properties_tab" class="selected_tab"><a href="#properties_tab_block">
+	  Listing
+      </a></li>
+    </ul>
+     <div id="properties_tab_block">
+      <div class="form_container">
+	<p>Empty fields will not be displayed on listing page</p>
+	{% if editing %}<p>Owner: {{ account.display_name }}</p>{% endif %}
+	<form name="edit" method="post" enctype="multipart/form-data" action="{{ upload_url }}" >
+	  {% if editing %}
+	  <input type="hidden" name="action" value="edit" />
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  {% else %}
+	  <input type="hidden" name="action" value="create" />
+	  {% endif %}
+	  <label for="title">Title <em>(Required)</em></label>
+	  <input id="title" class="text_input" type="text" name="title" value="{{ listing.title }}" maxlength="128" />
+	  <label for="sale_type">Sale Type <em>(Required)</em></label>
+	  <select id="sale_type" name="sale_type">
+	    <option value="S" {% if listing.sale_type == "S" %}selected="selected"{% endif %}>Sale</option>
+	    <option value="L" {% if listing.sale_type == "L" %}selected="selected"{% endif %}>Lease</option>
+	    <option value="B" {% if listing.sale_type == "B" %}selected="selected"{% endif %}>Both</option>
+	  </select>	
+	  <label for="listing_type">Listing Type</label>
+	  <select id="listing_type" name="listing_type">
+	    <option value="industrial">Industrial</option>
+	    <option value="office">Office</option>
+	    <option value="retail">Retail</option>
+	    <option value="apartment">Apartment</option>
+	    <option value="land">Land</option>
+	  </select>
+	  <label for="address">Address <em>(Required, do not include City or State)</em></label>
+	  <textarea id="address" name="address" class="half_height">{{ listing.address }}</textarea>
+<!--
+	  <label for="city">City <em>(Required)</em></label>
+	  <input id="city" class="text_input" type="text" name="city" value="{{ listing.city|capfirst }}" maxlength="128" />
+	  <label for="state">State <em>(Required)</em></label>
+	  <input id="state" class="text_input" type="text" name="state" value="{{ listing.state }}" />
+-->
+	  <label for="zip_code">Zip Code <em>(Required)</em></label>
+	  <input id="zip_code" class="text_input" type="text" name="zip_code" value="{{ listing.zip_code }}" maxlength="128" />
+	  <label for="sq_ft">Square Feet</label>
+	  <input id="sq_ft" class="text_input" type="text" name="sq_ft" value="{{ listing.sq_ft }}" maxlength="128" />
+	  <label for="office_sq_feet">Office Square Feet</label>
+	  <input id="office_sq_feet" class="text_input" type="text" name="office_sq_feet" value="{{ listing.office_sq_feet }}" maxlength="128" />	
+	  <label for="warehouse_sq_feet">Warehouse Square Feet</label>
+	  <input id="warehouse_sq_feet" class="text_input" type="text" name="warehouse_sq_feet" value="{{ listing.warehouse_sq_feet }}" maxlength="128" />	
+	  <label for="land_acres">Land Acres <em>(Required)</em></label>
+	  <input id="land_acres" class="text_input" type="text" name="land_acres" value="{{ listing.land_acres }}" maxlength="128" />
+	  <label for="price">Price <em>(Required)</em></label>
+	  <input id="price" class="text_input" type="text" name="price" value="{{ listing.price }}" maxlength="128" />
+	  {% if listing.brochure %}
+	  <a href="/download/{{ listing.brochure.key }}">{{ listing.brochure.filename }}</a>
+	  <label for="brochure_remove">Remove current brochure?</label>
+	  <input id="brochure_remove" class="checkbox" type="checkbox" name="brochure_remove" />
+	  {% endif %}
+	  <label for="brochure">Upload brochure{% if listing.brochure %} (replace current brochure) {% endif %}</label>
+	  <input id="brochure" class="file_input" type="file" name="brochure" />
+	  <label for="units">Units</label>
+	  <input id="units" class="text_input" type="text" name="units" value="{{ listing.units }}" maxlength="128" />
+	  <label for="stories">Stories</label>
+	  <input id="stories" class="text_input" type="text" name="stories" value="{{ listing.stories }}" maxlength="128" />		
+	  <label for="hvac">HVAC</label>
+	  <input id="hvac" class="text_input" type="text" name="hvac" value="{{ listing.hvac }}" maxlength="128" />							
+	  <label for="elevator">Elevators</label>
+	  <input id="elevator" class="text_input" type="text" name="elevator" value="{{ listing.elevator }}" maxlength="128" />		
+	  <label for="parcel_number">Parcel Number</label>
+	  <input id="parcel_number" class="text_input" type="text" name="parcel_number" value="{{ parcel_number }}" maxlength="128" />						
+	  <label for="features">Features <em>(Type Enter after each feature)</em></label>
+	  <textarea id="features" name="features">{% for feature in listing.features %}{{ feature }}{% if not forloop.last %}
+{% else %}{% endif %}{% endfor %}</textarea>
+	  <label for="description">Description <em>(Required)</em></label>
+	  <textarea id="description" name="description">{{ listing.description }}</textarea>
+	  <label for="active">Active?<em>Active listings appear in search results.</em></label>
+	  <input id="active" class="checkbox" type="checkbox" name="active" {% if listing.active %}checked="checked" {% endif %} />
+
+	  <input class="upgrade_action_button" type="submit" value="Save" />
+	</form>
+      </div>
+    </div>
+
+    {% if editing %}
+    <ul class="tab_list">
+      <li id="suites_tab" class="selected_tab"><a href="#suites_tab_block">
+	  Suites
+      </a></li>
+    </ul>
+
+    <div id="suites_tab_block">
+      <div class="action_forms">
+	<form method="post" action="/panel/suite/create">
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  <input class="action_button" type="submit" name="submit" value="Create Suite" />
+	</form>
+      </div>
+      {% if not listing.suite_set %}
+      <p>You can only create suites for a listing that has already been created.</p>
+      {% else %}
+      <p>Note: If you create, edit or delete a new suite you will lose any unsaved information on this listing.</p>
+      {% for suite in listing.suite_set %}
+      <h2>Suite Number: {{ suite.suite_number }}</h2>
+      <div class="action_forms">
+	<form id="edit-{{ suite.key }}" method="post" action="/panel/suite/edit">
+	  <input type="hidden" name="key" value="{{ listing.key }}" />
+	  <input type="hidden" name="suitekey" value="{{ suite.key }}" />
+	  <input class="action_button" type="submit" name="submit" value="Edit" />
+	</form>
+	<form id="delete-{{ suite.key }}" method="post">
+	  <input type="hidden" name="action" value="delete-suite" />
+	  <input type="hidden" name="suitekey" value="{{ suite.key }}" />
+	  <input class="action_button" type="submit" name="submit" value="Delete" />
+	</form>
+      </div>
+      <p>
+	Square Feet: {{ suite.square_feet }}<br/>
+	Price: {{ suite.price }}<br/>
+	Price per foot: {{ suite.price_per_foot }}<br/>
+	HVAC: {{ suite.hvac }}<br/>
+	Number of Offices: {{ suite.number_of_offices }}<br/>
+	Windowed Offices: {{ suite.windowed_offices }}<br/>
+	Restrooms: {{ suite.restrooms }}<br/>
+	Avaiable Immediatley: {{ suite.available_immediatley }}<br/>
+	Walkthrough Video ID: {{ suite.walkthrough }}<br/>
+	Features: {% for feature in suite.features %}<br/>{{ feature }}<br/>{% endfor %}
+      </p>
+      {% endfor %}
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock admin_body %}

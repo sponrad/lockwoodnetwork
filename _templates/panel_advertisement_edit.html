@@ -1,0 +1,51 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>{% if editing %}Edit {% else %}Create {% endif %}Advertisement</h1>
+  <div id="main_actions" class="action_forms">
+    <a class="action_button" href="/panel/advertise">Cancel</a>
+  </div>
+  <div class="tabbed_form_container">
+    <div id="properties_tab_block">
+      <div class="form_container">
+	<form name="edit" method="post" enctype="multipart/form-data" action="{{ upload_url }}" >
+	  {% if editing %}
+	  <input type="hidden" name="action" value="edit" />
+	  <input type="hidden" name="key" value="{{ advertisement.key }}" />
+	  {% else %}
+	  <input type="hidden" name="action" value="create" />
+	  {% endif %}
+	  <p>Create an Ad on the Lockwood Network by uploading an image for your service and specifying few details. Get more viewers by increasing your area of coverage.</p>
+	  <label for="title">Title <em>(Required)</em></label>
+	  <input id="title" class="text_input" type="text" name="title" value="{{ advertisement.title }}" maxlength="128" />
+	  
+	  <label for="description">Description</label>
+	  <textarea id="description" name="description">{{ advertisement.description }}</textarea>
+
+	  <label for="ad_link">Ad Link <em>Where do you want users that click your ad to go? (e.g. http://www.example.com)</em></label>
+	  <input id="ad_link" name="ad_link" type="text" class="text_input" value="{{ advertisement.ad_link }}"/>
+	  
+	  <label for="start_date">Start Date</label>
+	  <input id="start_date" name="start_date" type="text" class="text_input" value="{{ advertisement.start_date }}"/>
+
+	  <label for="end_date">End Date</label>
+	  <input id="end_date" name="start_date" type="text" class="text_input" value="{{ advertisement.end_date }}"/>
+
+<!--	  <label for="link_to_picture">Link to Picture<em>(Pictures must be 325px wide, or less)</em></label>
+	  <input id="link_to_picture" name="link_to_picture" type="text" class="text_input" value="{{ advertisement.link_to_picture }}"/> -->
+
+	  <label for="picture">Upload a Picture<em>(325px wide, or less)</em></label>
+	  <input id="picture" name="picture" class="file_input" type="file" />
+
+	  <label for="location">Location <em>(Full Address) enter this and then get a list of nearby cities/zip codes to place check boxes next to</em></label>
+	  <input id="location" name="location" type="text"  class="text_input" value="{{ advertisement.location }}"/>
+	  
+	  <input class="upgrade_action_button" type="Submit" value="Save" />
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock admin_body %}

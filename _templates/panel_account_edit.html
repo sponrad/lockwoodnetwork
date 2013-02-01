@@ -1,0 +1,53 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+  <h1>Editing Account</h1>
+  <div class="form_container">
+<p><a href="/panel/account" class="action_button">Cancel</a></p>
+    <form name="account_form" method="post" enctype="multipart/form-data" action="{{ upload_url }}" >
+      {% if account %}
+      <input type="hidden" name="action" value="edit" />
+      {% else %}
+      <input type="hidden" name="action" value="create" />
+      {% endif %}
+
+      <label for="first_name">First Name</label>
+      <input id="first_name" class="text_input" type="text" name="first_name" value="{{ account.first_name }}" maxlength="128" />
+
+<label for="last_name">Last Name</label>
+      <input id="last_name" class="text_input" type="text" name="last_name" value="{{ account.last_name }}" maxlength="128" />      
+
+      <label for="display_name">Full Name</label>
+      <input id="display_name" class="text_input" type="text" name="display_name" value="{{ account.display_name }}" maxlength="128" />
+
+      <label for="phone">Phone Number</label>
+      <input id="phone" class="text_input" type="text" name="phone" value="{{ account.phone }}" maxlength="128" />
+
+      <label for="role">Role</label>
+      <select id="role" name="role">
+	<option name="owner" value="owner" {% if account.role == 'owner' %}selected="selected"{% endif %}>Owner</option>
+	<option name="broker" value="broker" {% if account.role == 'broker' %}selected="selected"{% endif %}>Broker</option>
+	<option name="agent" value="agent" {% if account.role == 'agent' %}selected="selected"{% endif %}>Agent</option>
+	<option name="investor" value="investor" {% if account.role == 'investor' %}selected="selected"{% endif %}>Investor</option>
+	<option name="manager" value="manager" {% if account.role == 'manager' %}selected="selected"{% endif %}>Manager</option>
+	<option name="representative" value="representative" {% if account.role == 'representative' %}selected="selected"{% endif %}>Representative</option>n
+	<option name="buyer" value="buyer" {% if account.role == 'buyer' %}selected="selected"{% endif %}>Buyer</option>
+	<option name="loans" value="loans" {% if account.role == 'loans' %}selected="selected"{% endif %}>Loans</option>
+      </select>
+
+      <label for="company">Company</label>
+      <input id="company" class="text_input" type="text" name="company" value="{{ account.company }}" maxlength="128" />
+
+      <label for="description">Bio</label>
+      <textarea id="description" name="description">{{ account.description }}</textarea>
+
+      <label for="picture">Picture</label>
+      {% if account.picture %}<img src="{{ account.picture.serve_medium }}"/>{% else %}- None set.{% endif %}
+      <input id="display_image" class="file_input" type="file" name="display_image" />
+
+      <input class="upgrade_action_button" type="submit" value="Save" />
+    </form>
+  </div>
+</div>
+{% endblock admin_body %}

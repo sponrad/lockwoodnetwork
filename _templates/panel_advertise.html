@@ -1,0 +1,46 @@
+{% extends "panel.html" %}
+
+{% block admin_body %}
+<div class="right_column">
+<h1>Advertising</h1>
+<p><a class="action_button" href="/panel/advertisement/create">Create New Advertisement</a></p>
+
+<p>Advertisements are free to create and manage</p>
+<p>Activated Advertisements are shown on listing search result pages and listing pages. Make your service well-known by increasing the number of areas that you advertise in.</p>
+
+{% if advertisements %}
+{% for ad in advertisements %}
+<hr>
+<form id="delete-{{ ad.key }}" method="post" action="/panel/advertise" style="float: right;">
+  <input type="hidden" name="action" value="delete" />
+  <input type="hidden" name="key" value="{{ ad.key }}" />
+  <input class="action_button" type="submit" name="submit" value="Delete" />
+  <a href="/panel/advertisement/{{ ad.key }}" class="action_button">Edit</a>
+{% if not ad.active %}<a class="upgrade_action_button" href="/panel/advertisement/activate/{{ ad.key }}">Activate</a>{% endif %}
+</form>
+<h2>{{ ad.title }}</h2>
+<p style="float: right;">Views: {{ ad.views }} Clicks: {{ ad.clicks }}</p>
+<p><img src="{% if ad.picture %}{{ ad.picture.picture.serve_thumbnail }}{% else %}{{ ad.link_to_picture }}{% endif %}" /></p>
+<p>{{ ad.description }}</p>
+<p>Start Date: {{ ad.start_date }} End Date: {{ ad.end_date }}</p>
+{% if ad.cities %}<p>Cities: {% for city in ad.cities %}{{ city }}{% if not forloop.last %},{% endif %} {% endfor %}</p>{% endif %}
+{% endfor %}
+{% else %}
+<p>No advertisements created</p>
+{% endif %}
+
+<!--<small><ul>Things to be included here:
+  <li>Ad management, users can have many, create update delete</li>
+  <li>Ad click rate monitors</li>
+  <li>Ad view rates</li>
+  <li>Ad locations</li>
+  <li>Ad Text</li>
+  <li>Ad Appearance rate</li>
+  <li>Ad Picture(s)</li>
+  <li>Title</li>
+  <li>Firm/contact info</li>
+  <li>Payment, and payment status</li>
+  <li>Include ads when searching</li>
+</ul></small>-->
+</div>
+{% endblock admin_body %}

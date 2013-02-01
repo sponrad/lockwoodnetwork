@@ -1,0 +1,193 @@
+{% extends "index.html" %}
+
+{% block title %}{{ listing.title }} - Lockwood Network{% endblock title %}
+
+{% block head %}
+<script charset="UTF-8" type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0">
+</script>
+<script type="text/javascript">
+  function GetMap()
+  {   
+  var map = new Microsoft.Maps.Map(document.getElementById("mapDiv"), 
+  {credentials: "{{ bingkey }}",
+  center: new Microsoft.Maps.Location({{ listing.location }}),
+  mapTypeId: Microsoft.Maps.MapTypeId.road,
+  zoom: 13,
+  enableClickableLogo: false,
+  enableSearchLogo: false,
+  showDashboard: true,
+  showScalebar: true,
+  showMapTypeSelector: true,
+  disableZooming: true,
+});
+
+  var pins = new Microsoft.Maps.EntityCollection();
+  pins.push(new Microsoft.Maps.Pushpin(new Microsoft.Maps.Location({{ listing.location }})));
+  map.entities.push(pins);
+  }
+</script>
+{% endblock head %}
+
+{% block bodytag %} onload="GetMap();"{% endblock bodytag %}
+
+{% block body %}
+<div class="double_column_container">
+  <div id="property_image_column" class="image_column">
+    <div class="image_viewer">
+      <div class="image_viewer_wrap">
+	{% if listing.display_picture %}
+	<div class="listing_image">
+	  <div class="listing_image_border">
+	    <div class="listing_image_background" style="background-image: url({{ listing.display_picture.serve_medium }});">
+	      <a href="{{ listing.display_picture.serve_picture }}"><img src="{{ listing.display_picture.serve_medium }}" alt="{{ listing.display_picture.description }}" /></a>
+	    </div>
+	  </div>
+	</div>
+	{% else %}
+	{% if listing.picture_set.count > 0 %}
+	<div class="listing_image">
+	  <div class="listing_image_border">
+	    <div class="listing_image_background" style="background-image: url({{ listing.picture_set.0.serve_medium }});">
+	      {% if listing.picture_set.0 %}
+	      <a href="{{ listing.picture_set.0.serve_picture }}"><img src="{{ listing.picture_set.0.serve_medium }}" alt="{{ listing.picture_set.0.description }}" /></a>
+	      {% endif %}
+	    </div>
+	  </div>
+	</div>		
+	{% else %}
+	<div class="listing_image">
+	  <div class="listing_image_border">
+	    <div class="listing_image_background" >
+	      <p>No images available</p>
+	    </div>
+	  </div>
+	</div>
+
+	{% endif %}
+	{% endif %}
+
+	<div>
+	  {% if listing.picture_set.count > 0 %}
+	  {% for picture in listing.picture_set|dictsort:"order" %}
+	  <div class="thumbnail">
+	    <a href="{{ picture.serve_medium }}"style="background-image: url({{ picture.serve_thumbnail }});">
+	      <img src="{{ picture.serve_picture }}" alt="{{ picture.description }}" />
+	    </a>
+	  </div>
+	  {% endfor %}
+	</div>
+	<script type="text/javascript">
+	  $('div.thumbnail a').click(function(e){
+	  e.preventDefault();
+	  this.blur();
+	  $('div.listing_image_background').css('background-image',"url(" + $(this).attr('href') + ")");
+	  $('div.listing_image_background a').attr('href',$(this).children().first().attr('src'));
+	  window.location = "#ln_logo";
+	  });
+	</script>
+	{% else %}
+      </div>
+      <p>There are currently no photos for this property</p>
+      {% endif %}
+    </div>
+    <div id="property_represented">
+      <h2>Listing represented by</h2>
+      <ul class="represnted_list">
+	{% if owner %}
+	<a href="/">{{ owner.display_name }}</a> {{ owner.display_phone }}
+	<img src="{{ owner.picture.serve_medium }}" />
+	{% else %}
+	{{ listing.owner }}
+	{% endif %}
+      </ul>
+    </div>
+    <div class="image_viewer_footer"></div>
+  </div>
+</div>
+
+  <div id="property_information" class="listing_body_column">
+    <a href="#" onclick="window.print(); return false;" class="print_button" >Print</a> 
+    {% if user == listing.owner %}<div id="listingowner">
+      <a class="upgrade_action_button" href="/panel/listing/upgrade/{{ listing.key }}">Upgrade</a> 
+      <a class="action_button" href="/panel/listing/{{ listing.key }}">Edit</a> 
+    </div>{% endif %}
+    <h1>{% if listing.title %}{{ listing.title }}{% endif %}</h1>
+    <h2 class="sale_type"></h2>
+    <h2>{{ listing.address }}, {{ listing.city }}, {{ listing.state }} - {% if listing.sale_type == "B" %}For Sale or Lease{% else %}{% if listing.sale_type == "S" %}For Sale{% else %}For Lease{% endif %}{% endif %}</h2>
+    {% if listing.brochure %}<p><a href="/download/{{ listing.brochure.key }}"><img src="/_static/download_brochure_button.gif" alt="Download this listing's brochure." /></a></p>{% endif %}
+    {% if listing.description %}<p>{{ listing.description }}</p>{% endif %}
+    <h2>Property Information</h2>
+    <p>
+      {% if listing.price %}<span>Price:</span> ${{ listing.price|intcomma }}<br/>{% endif %}
+      {% if listing.sq_ft %}<span>Square Footage:</span> {{ listing.sq_ft }}<br/>{% endif %}
+      {% if listing.building_sq_footage %}<span>Building Square Footage:</span> {{ listing.building_sq_footage }}<br/>{% endif %}
+      {% if listing.office_sq_feet %}<span>Office Square Feet:</span> {{ listing.office_sq_feet }}<br/>{% endif %}
+      {% if listing.warehouse_sq_feet %}<span>Warehouse Square Feet:</span> {{ listing.warehouse_sq_feet }}<br/>{% endif %}
+      {% if listing.land_acres %}<span>Land Acres:</span> {{ listing.land_acres }}<br/>{% endif %}
+      {% if listing.units %}<span>Units:</span> {{ listing.units }}<br/>{% endif %}
+      {% if listing.stories %}<span>Stories:</span> {{ listing.stories }}<br/>{% endif %}
+      {% if listing.hvac %}<span>HVAC:</span> {{ listing.hvac }}<br/>{% endif %}
+      {% if listing.elevator %}<span>Elevator:</span> {{ listing.elevator }}<br/>{% endif %}
+      {% if listing.parcel_number %}<span>Parcel Number:</span> {{ listing.parcel_number }}<br/>{% endif %}
+    </p>
+    {% if listing.features %}
+    <h2>Listing Features</h2>
+    <ul>
+      {% for feature in listing.features %}
+      <li>{{ feature }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if listing.location %}
+    <div class="listing_map_div">
+      <div id="mapDiv">
+      </div>
+    </div>
+    {% endif %}
+
+    {% if suites %}
+    {% for suite in suites %}
+    {% if forloop.first %}
+    <h1>Suites</h1>
+    {% endif %}
+    <h2>{% if suite.suite_number %}Suite Number {{ suite.suite_number }}{% endif %}</h2>
+    {% if suite.walkthrough %}
+    <p class="show_walkthrough_button"><a href=""><img src="/_static/view_walkthrough_button.gif" alt="Show Walkthrough." class="walkthrough_{$suites[s].suite_number}" /></a></p>
+    <div id="walkthrough_{$suites[s].suite_number}" class="walkthrough_video">
+      <object type="application/x-shockwave-flash" data="http://www.youtube.com/v/{$suites[s].walkthrough}&amp;hl=en" width="450" height="350">
+	<param name="movie" value="http://www.youtube.com/v/HDo2YXzG4S0&amp;hl=en" />
+	<param name="allowScriptAcess" value="sameDomain" /><param name="quality" value="best" />
+	<param name="bgcolor" value="#FFFFFF" /><param name="scale" value="noScale" />
+	<param name="salign" value="TL" /><param name="FlashVars" value="playerMode=embedded" />
+      </object>
+    </div>
+    {% endif %}
+    <p>
+      {% if suite.square_feet %}<span>Square Feet:</span> {{ suite.square_feet }}<br/>{% endif %}
+      {% if suite.price %}<span>Price:</span> {{ suite.price }}<br/>{% endif %}
+      {% if suite.price_per_foot %}<span>Price Per Foot:</span> {{ suite.price_per_foot }}<br/>{% endif %}
+      {% if suite.hvac %}<span>HVAC:</span> {{ suite.hvac }}<br/>{% endif %}
+      {% if suite.number_of_offices %}<span>Number of Offices:</span> {{ suite.number_of_offices }}<br/>{% endif %}
+      {% if suite.windowed_offices %}<span>Windowed Offices:</span> {[ suite.windowed_offices }}<br/>{% endif %}
+      {% if suite.restrooms %}<span>Restrooms:</span> {{ suite.restrooms }}<br/>{% endif %}
+      {% if suite.available_immediatley %}<span>Available Immediately:</span> {{ suite.available_immediately }}{% endif %}
+    </p>
+    <h2>Suite features</h2>
+    <ul>
+      {% for feature in suite.features %}
+      <li>{{ feature }}</li>
+      {% endfor %}
+    </ul>
+    <script type="text/javascript">
+      $('p.show_walkthrough_button a').click(function(e){
+      e.preventDefault();
+      $('#'+$('img',this).attr('class')).toggle();
+      });
+    </script>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <div class="footer">Listing views: {{ listing.views }}</div>
+</div>
+{% endblock body %}
